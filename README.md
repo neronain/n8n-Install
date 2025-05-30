@@ -6,35 +6,35 @@
 ### ขั้นตอนที่ 1: อัปเดตระบบ
 
 เริ่มต้นด้วยการอัปเดตระบบของคุณให้เป็นเวอร์ชันล่าสุดก่อน:
-
+```bash
 sudo apt update && sudo apt upgrade -y
-
+```
 ### ขั้นตอนที่ 2: ติดตั้ง Dependencies ที่จำเป็น
 
 Docker ต้องการ `apt-transport-https`, `ca-certificates`, `curl`, `software-properties-common`, และ `gnupg` เพื่อทำงานให้ถูกต้อง เราจะติดตั้ง dependencies ดังนี้:
-
+```bash
 sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg -y
-
+```
 
 ### ขั้นตอนที่ 3: เพิ่ม Docker GPG Key
 
 เพื่อให้มั่นใจว่าแพ็กเกจ Docker มาจากแหล่งที่เชื่อถือได้ เราจะเพิ่ม GPG key ที่ใช้ในการตรวจสอบแพ็กเกจ Docker:
-
+```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-
+```
 ### ขั้นตอนที่ 4: เพิ่ม Repository ของ Docker
 
 ตอนนี้เราจะเพิ่ม repository ของ Docker ลงในระบบ:
-
+```bash
 echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
+```
 ### ขั้นตอนที่ 5: ติดตั้ง Docker
 
 ตอนนี้ให้ติดตั้ง Docker ด้วยคำสั่งนี้:
-
+```bash
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io -y
-
+```
 ### ขั้นตอนที่ 6: ตรวจสอบการติดตั้ง Docker
 
 หลังจากติดตั้งเสร็จแล้ว ให้ตรวจสอบว่า Docker ทำงานได้หรือไม่:
