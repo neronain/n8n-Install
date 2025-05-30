@@ -33,7 +33,7 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] 
 ตอนนี้ให้ติดตั้ง Docker ด้วยคำสั่งนี้:
 ```bash
 sudo apt update
-sudo apt install docker-ce docker-ce-cli containerd.io -y
+sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin-y
 ```
 ### ขั้นตอนที่ 6: ตรวจสอบการติดตั้ง Docker
 
@@ -86,7 +86,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 3. ตรวจสอบเวอร์ชันของ Docker Compose:
 
 ```bash
-docker-compose --version
+docker --version && docker-compose --version && netstat --version && nano --version
 ```
 
 ### ขั้นตอนที่ 10: การติดตั้งโปรแกรมที่จำเป็นอื่นๆ (Optional)
@@ -97,6 +97,3 @@ docker-compose --version
 sudo apt install git curl vim -y
 ```
 
-ตอนนี้คุณก็จะมี Docker และโปรแกรมที่จำเป็นทั้งหมดติดตั้งเรียบร้อยแล้วบน Ubuntu 24 หรือ 25!
-
-หากต้องการความช่วยเหลือเพิ่มเติมหรือติดปัญหาจุดใด บอกมาได้เลยนะ!
