@@ -97,3 +97,137 @@ docker --version && docker-compose --version && netstat --version && nano --vers
 sudo apt install git curl vim -y
 ```
 
+การตั้งค่า **n8n** (เครื่องมือทำงานอัตโนมัติแบบโอเพนซอร์ส) ด้วย **Docker Compose** บน Ubuntu มีขั้นตอนดังนี้:
+
+### ขั้นตอนที่ 1: สร้างโฟลเดอร์สำหรับ n8n
+
+เริ่มต้นด้วยการสร้างโฟลเดอร์ที่จะเก็บไฟล์ `docker-compose.yml` และการตั้งค่าของ n8n:
+
+```bash
+mkdir ~/n8n-docker
+cd ~/n8n-docker
+```
+
+### ขั้นตอนที่ 2: สร้างไฟล์ `docker-compose.yml`
+
+สร้างไฟล์ `docker-compose.yml` ในโฟลเดอร์ที่สร้างขึ้นมา:
+
+```bash
+nano docker-compose.yml
+```
+
+จากนั้นให้เพิ่มโค้ดนี้ลงไปในไฟล์:
+
+```yaml
+version: '3'
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    environment:
+      - N8N_HOST=https://localhost
+      - N8N_EDITOR_BASE_URL=https://localhost
+      - WEBHOOK_URL=https://localhost
+      - GENERIC_TIMEZONE=Asia/Bangkok
+      - TZ=Asia/Bangkok
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_HOST=postgresql
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=n8n_user
+      - DB_POSTGRESDB_SCHEMA=public
+      - DB_POSTGRESDB_PASSWORD=n8npassword
+    ports:
+      - 5678:5678
+    volumes:
+      - n8n-data:/home/node/.n8n
+    depends_on:
+      - postgresql
+    restart: always
+
+  n8n-db:
+    image: postgres:16-alpine
+    container_name: postgresql
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n_user
+      - POSTGRES_PASSWORD=n8npassword
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  n8n-data:
+  postgresql-data:
+```
+
+### คำอธิบาย:
+
+* **n8n**: จะใช้ภาพ `n8n/n8n` ล่าสุดจาก Docker Hub และรัน n8n ที่พอร์ต 5678
+* **n8n-db**: ใช้ PostgreSQL ในการเก็บข้อมูล โดยใช้ตัวแปรที่กำหนด เช่น `POSTGRES_DB`, `POSTGRES_USER`, และ `POSTGRES_PASSWORD`
+* **Basic Auth**: ตั้งค่าการใช้งาน n8n โดยใช้การยืนยันตัวตนแบบเบื้องต้น (`N8N_BASIC_AUTH_ACTIVE=true`) และกำหนดชื่อผู้ใช้และรหัสผ่าน
+
+### ขั้นตอนที่ 3: เริ่มต้น Docker Compose
+
+หลังจากสร้างไฟล์ `docker-compose.yml` แล้ว ให้เริ่มต้นการใช้งาน Docker Compose ด้วยคำสั่ง:
+
+```bash
+docker-compose up -d
+```
+
+คำสั่งนี้จะดาวน์โหลดภาพ Docker ที่จำเป็นและเริ่มต้นการใช้งาน n8n และฐานข้อมูล PostgreSQL ในโหมดเบื้องหลัง
+
+### ขั้นตอนที่ 4: ตรวจสอบสถานะ
+
+เพื่อให้แน่ใจว่า n8n กำลังทำงานอยู่, คุณสามารถตรวจสอบสถานะของ container ด้วยคำสั่ง:
+
+```bash
+docker-compose ps
+```
+
+ถ้า container ทั้งสอง (`n8n` และ `n8n-db`) รันอยู่ คุณจะเห็นสถานะที่เป็น **Up**.
+
+### ขั้นตอนที่ 5: เข้าถึง n8n
+
+ตอนนี้คุณสามารถเข้าใช้งาน n8n ได้โดยเปิดเว็บบราวเซอร์และไปที่ URL ต่อไปนี้:
+
+```
+http://localhost:5678
+```
+
+จากนั้นให้ใส่ **ชื่อผู้ใช้** และ **รหัสผ่าน** ที่คุณตั้งไว้ในไฟล์ `docker-compose.yml` (ในตัวอย่างนี้คือ `admin` และ `adminpassword`).
+
+### ขั้นตอนที่ 6: ปรับการตั้งค่าพอร์ต (ถ้าจำเป็น)
+
+ถ้าคุณต้องการเปลี่ยนพอร์ตในการเข้าถึง n8n คุณสามารถแก้ไขพอร์ตในไฟล์ `docker-compose.yml` ในส่วนของ `ports` ดังนี้:
+
+```yaml
+ports:
+  - 8080:5678
+```
+
+ในตัวอย่างนี้ `8080` จะเป็นพอร์ตใหม่ที่คุณสามารถใช้ในการเข้าถึง n8n.
+
+### ขั้นตอนที่ 7: การหยุดและเริ่มใหม่
+
+หากคุณต้องการหยุดการทำงานของ n8n:
+
+```bash
+docker-compose down
+```
+
+และหากคุณต้องการเริ่มใหม่:
+
+```bash
+docker-compose up -d
+```
+
+### ข้อเสนอแนะเพิ่มเติม
+
+* **Backup**: ควรมีการสำรองข้อมูลจากฐานข้อมูลที่คุณใช้ (PostgreSQL) โดยการทำการสำรองข้อมูลจาก volume ที่เก็บข้อมูลของฐานข้อมูล
+* **ปรับแต่งการตั้งค่า**: คุณสามารถปรับแต่งการตั้งค่าเพิ่มเติม เช่น การตั้งค่าการเชื่อมต่อกับบริการอื่นๆ หรือการตั้งค่าความปลอดภัยที่มากขึ้นในระบบของคุณ
+
+เรียบร้อยแล้ว! ตอนนี้คุณก็มี n8n รันอยู่บน Docker Compose บน Ubuntu แล้ว. ถ้ามีปัญหาหรือคำถามเพิ่มเติม อย่าลืมถามได้เลยนะ!
+
+
