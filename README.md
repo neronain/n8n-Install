@@ -294,3 +294,14 @@ Backup n8n
 sudo tar -czvf n8n_backup_$(date+%Y%m%d).tar.gz -C /var/lib/docker/volumes n8n_n8n-date
 sudo tar -czvf pg_backup_$(date+%Y%m%d).tar.gz -C /var/lib/docker/volumes n8n_postgresql-data
 ```
+
+Configure n8n Environment Variables
+Set the environment variables needed for n8n:
+
+```bash
+
+export N8N_SECURE_COOKIE=false
+
+export WEBHOOK_URL=https://YOUR_VM_IP
+
+```
