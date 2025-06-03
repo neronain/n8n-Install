@@ -241,4 +241,37 @@ Update Config Nginx เพื่อใช้งาน SSL
 sudo nano /etc/nginx/sites-available/n8n
 ```
 
+```bash
+server {
+  listen 80;
+  server_name YOUR_VM_IP;
+  return 301 https://$host$request_uri;
+}
+server {
+  listen 443 ssl;
+  server_name YOUR_VM_IP;
 
+  ssl_certificate /etc/nginx/ssl/n8n/server.crt;
+  ssl_certificate_key /etc/nginx/ssl/n8n/server.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers on;
+
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+  client_max_body_size 100M;
+
+location / {
+  proxy_pass http://localhost:5678;
+  proxy_http_version 1.1;
+  proxy_set_header Upgrade $http_upgrade;
+  proxy_set_header Connection “upgrade”;
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  proxy_set_header X-Forwarded-Proto $scheme;
+  }
+
+}
+```
