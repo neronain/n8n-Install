@@ -224,5 +224,21 @@ docker-compose up -d
 ```
 
 
+### ขั้นตอนที่ 8: ตั้งค่า SSL ด้วย Certbot
+```bash
+sudo mkdir -p /etc/nginx/ssl/n8n
+
+#สร้าง self-signed certificate
+sudo openssl req -x509 -nodes -day 365 -newkey rsa:2048 \
+  -keyout /etc/nginx/ssl/n8n/server.key \
+  -out /etc/nginx/ssl/n8n/server.crt \
+  -subj "/C=TH/ST=Bangkok/L=Bangkok/O=n8n-setup/CN=YOUR_VM_IP" \
+  -addext "subjectAltName = IP:YOUR_VM_IP"
+```
+
+Update Config Nginx เพื่อใช้งาน SSL
+```bash
+sudo nano /etc/nginx/sites-available/n8n
+```
 
 
