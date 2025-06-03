@@ -281,3 +281,16 @@ sudo ln -s /etc/nginx/sites-available/n8n /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
+
+Update n8n
+```bash
+docker compose down
+docker compose pull
+docker compose up -d
+```
+
+Backup n8n
+```bash
+sudo tar -czvf n8n_backup_$(date+%Y%m%d).tar.gz -C /var/lib/docker/volumes n8n_n8n-date
+sudo tar -czvf pg_backup_$(date+%Y%m%d).tar.gz -C /var/lib/docker/volumes n8n_postgresql-data
+```
