@@ -305,3 +305,39 @@ export N8N_SECURE_COOKIE=false
 export WEBHOOK_URL=https://YOUR_VM_IP
 
 ```
+
+
+### 9: Install and Configure PM2
+PM2 is a process manager for Node.js applications that will help keep n8n running in the background.
+
+Install PM2 globally:
+
+```bash
+
+npm install pm2 -g
+
+```
+
+Start n8n using PM2:
+
+```bash
+
+pm2 start n8n
+
+```
+
+Ensure PM2 starts automatically on system boot:
+
+```bash
+
+pm2 startup
+
+```
+
+You will see a command output from PM2. Execute the command to enable PM2 at startup. For example:
+
+```bash
+
+sudo env PATH=$PATH:/home/n8nuser/.nvm/versions/node/v18.20.5/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u n8nuser — hp /home/n8nuser
+
+```
