@@ -126,9 +126,9 @@ services:
     image: docker.n8n.io/n8nio/n8n
     container_name: n8n
     environment:
-      - N8N_HOST=https://localhost
-      - N8N_EDITOR_BASE_URL=https://localhost
-      - WEBHOOK_URL=https://localhost
+      - N8N_HOST=https://YOUR_VM_IP
+      - N8N_EDITOR_BASE_URL=https://YOUR_VM_IP
+      - WEBHOOK_URL=https://YOUR_VM_IP
       - GENERIC_TIMEZONE=Asia/Bangkok
       - TZ=Asia/Bangkok
       - DB_TYPE=postgresdb
